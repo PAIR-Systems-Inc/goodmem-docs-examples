@@ -21,9 +21,39 @@ from typing import List, Dict, Optional, Tuple, Set
 from tqdm import tqdm
 import uuid
 import os
+import urllib.request
 
-# Import sentence segmentation utility from current directory
-import sb_sed
+# Auto-install sb_sed if not available
+def ensure_sb_sed_available():
+    """Ensure sb_sed module is available, download if necessary."""
+    try:
+        import sb_sed
+        return sb_sed
+    except ImportError:
+        logging.info("📥 Downloading sb_sed module from google/retrieval-qa-eval...")
+        try:
+            # Download sb_sed.py from the source repository
+            url = "https://raw.githubusercontent.com/google-research-datasets/retrieval-qa-eval/main/sb_sed.py"
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            sb_sed_path = os.path.join(script_dir, "sb_sed.py")
+
+            urllib.request.urlretrieve(url, sb_sed_path)
+            logging.info(f"✅ Successfully downloaded sb_sed.py to {sb_sed_path}")
+
+            # Now import it
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("sb_sed", sb_sed_path)
+            sb_sed = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(sb_sed)
+            return sb_sed
+
+        except Exception as e:
+            logging.error(f"❌ Failed to download sb_sed: {e}")
+            logging.error("Please manually download from: https://github.com/google-research-datasets/retrieval-qa-eval/blob/main/sb_sed.py")
+            sys.exit(1)
+
+# Import sentence segmentation utility (auto-downloads if missing)
+sb_sed = ensure_sb_sed_available()
 
 # Import GoodMem client
 try:

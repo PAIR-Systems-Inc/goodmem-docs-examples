@@ -22,6 +22,14 @@ Each script includes comprehensive command-line documentation. Run with `--help`
 python insert_squad_sentences_goodmem.py --help
 ```
 
+## Dependencies
+
+### Sentence Boundary Detection (`sb_sed.py`)
+
+The `insert_squad_sentences_goodmem.py` script uses `sb_sed.py`, a sentence boundary detection utility from Google's [`retrieval-qa-eval`](https://github.com/google-research-datasets/retrieval-qa-eval) project (Apache 2.0 License).
+
+**No manual installation needed** - the script automatically downloads `sb_sed.py` from the source repository if it's not available locally. Simply run the script and it will handle the dependency automatically.
+
 ## Related Documentation
 
 - [Hybrid Search Pipeline Guidelines](https://docs.goodmem.ai/how-to/hybrid-search)

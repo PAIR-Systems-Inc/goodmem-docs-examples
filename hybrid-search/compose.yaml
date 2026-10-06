@@ -1,0 +1,46 @@
+# Tested CPU-only installation. Bind host ports to loopback; models share this network.
+name: goodmem-hybrid-example
+services:
+  db:
+    image: pgvector/pgvector@sha256:9ae02a756ba16a2d69dd78058e25915e36e189bb36ddf01ceae86390d7ed786a
+    environment:
+      POSTGRES_USER: goodmem_user
+      POSTGRES_PASSWORD: ${GOODMEM_DB_PASSWORD:?Set GOODMEM_DB_PASSWORD in .env}
+      POSTGRES_DB: goodmem_db
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goodmem_user -d goodmem_db"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  server:
+    # The corrected public image will be pinned after v1.0.325 is released.
+    image: ${GOODMEM_SERVER_IMAGE:?Set GOODMEM_SERVER_IMAGE to a build containing goodmem PR 1844; v1.0.324 is affected}
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/goodmem_db
+      DB_USER: goodmem_user
+      DB_PASSWORD: ${GOODMEM_DB_PASSWORD}
+      GOODMEM_TLS_DISABLED: "true"
+      JAVA_TOOL_OPTIONS: "-Xmx2g"
+    ports: ["127.0.0.1:${GOODMEM_REST_PORT:-18080}:8080", "127.0.0.1:${GOODMEM_GRPC_PORT:-19090}:9090"]
+    depends_on:
+      db:
+        condition: service_healthy
+  dense:
+    # TEI cpu-1.9 (1.9.4)
+    image: ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d
+    cpus: 6
+    environment: {OMP_NUM_THREADS: "4"}
+    command: ["--model-id", "sentence-transformers/all-MiniLM-L6-v2", "--revision", "1110a243fdf4706b3f48f1d95db1a4f5529b4d41", "--tokenization-workers", "4"]
+    ports: ["127.0.0.1:${DENSE_PORT:-18081}:80"]
+    volumes: ["hf-cache:/data"]
+  sparse:
+    image: ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d
+    cpus: 6
+    environment: {OMP_NUM_THREADS: "4"}
+    command: ["--model-id", "naver/splade-cocondenser-ensembledistil", "--revision", "49cf4c7b0db5b870a401ddf5e2669993ef3699c7", "--pooling", "splade", "--tokenization-workers", "4"]
+    ports: ["127.0.0.1:${SPARSE_PORT:-18082}:80"]
+    volumes: ["hf-cache:/data"]
+volumes:
+  pgdata:
+  hf-cache:

@@ -1,0 +1,422 @@
+{
+  "comparisons": {
+    "0": {
+      "article_clusters": 24,
+      "bootstrap_iterations": 10000,
+      "ci95": [
+        0.09107153670769776,
+        0.12092703929743487
+      ],
+      "evidence_of_improvement": true,
+      "method": "paired article-cluster percentile bootstrap",
+      "mrr_difference": 0.10775555555555556,
+      "seed": 42
+    },
+    "0.005": {
+      "article_clusters": 24,
+      "bootstrap_iterations": 10000,
+      "ci95": [
+        0.043356203806229954,
+        0.071392021034982
+      ],
+      "evidence_of_improvement": true,
+      "method": "paired article-cluster percentile bootstrap",
+      "mrr_difference": 0.05934603174603175,
+      "seed": 42
+    },
+    "sparse": {
+      "article_clusters": 24,
+      "bootstrap_iterations": 10000,
+      "ci95": [
+        -0.0018845208334229756,
+        0.009068150809118517
+      ],
+      "evidence_of_improvement": false,
+      "method": "paired article-cluster percentile bootstrap",
+      "mrr_difference": 0.0029956349206349204,
+      "seed": 42
+    }
+  },
+  "conclusion": "Held-out intervals do not establish improvement over both single-model scoring baselines. Test a single-embedder deployment separately before drawing cost or latency conclusions.",
+  "provenance": {
+    "audit_build": {
+      "base_commit": "f1c8bd12cd495a8f20409049645ab89add16c541",
+      "jar_sha256": "36a1a594304c4bbf62c2b79ddba218ddbeccf5e5d3162a638434b20b943f9b05",
+      "patch_sha256": "19b5bc6bcfaaec699af8067444adddfb810110f2cff09d9410face8feac30a07",
+      "version": "1.0.324-hybrid-fusion-audit"
+    },
+    "baseline_scope": "Zero coefficients remove scoring contributions; both models still discover candidates in the same space.",
+    "corpus_sha256": "de3899ac44bc088b8d510a01d987c70fb6d4e3bef44ed3b00d4663461a3ce3b2",
+    "dataset_sha256": "95aa6a52d5d6a735563366753ca50492a658031da74f301ac5238b03966972c9",
+    "dataset_url": "https://raw.githubusercontent.com/rajpurkar/SQuAD-explorer/master/dataset/dev-v1.1.json",
+    "date": "2026-10-06",
+    "manifest_sha256": "f5f82a1458f9ec9bf425556aa5de63a428bf8490bc9f36edfee449d4e140647b",
+    "models": [
+      {
+        "dimensions": 384,
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+      },
+      {
+        "dimensions": 30522,
+        "model": "naver/splade-cocondenser-ensembledistil",
+        "revision": "49cf4c7b0db5b870a401ddf5e2669993ef3699c7"
+      }
+    ],
+    "question_fingerprints": {
+      "test": "20b5ab2506fa80400e46cbb6b55ebcbb154fd919fd313c804dbbaac23e897979",
+      "tune": "de7293f64ed130a3861ea6ac6399e99985b86cc3147e85cb45af83d02755158c"
+    },
+    "retrieval": {
+      "chunking": "none",
+      "hnsw": "server defaults",
+      "postprocessor": null,
+      "requested_size": 10
+    },
+    "seed": 42,
+    "server_fix_commit": "c6cbb9726",
+    "server_fix_pr": "https://github.com/PAIR-Systems-Inc/goodmem/pull/1844",
+    "split_articles": {
+      "test": [
+        "1973_oil_crisis",
+        "Amazon_rainforest",
+        "American_Broadcasting_Company",
+        "Chloroplast",
+        "Civil_disobedience",
+        "Computational_complexity_theory",
+        "Construction",
+        "Force",
+        "French_and_Indian_War",
+        "Fresno,_California",
+        "Genghis_Khan",
+        "Geology",
+        "Huguenot",
+        "Immune_system",
+        "Intergovernmental_Panel_on_Climate_Change",
+        "Newcastle_upon_Tyne",
+        "Private_school",
+        "Sky_(United_Kingdom)",
+        "Southern_California",
+        "Super_Bowl_50",
+        "United_Methodist_Church",
+        "Victoria_(Australia)",
+        "Victoria_and_Albert_Museum",
+        "Yuan_dynasty"
+      ],
+      "tune": [
+        "Apollo_program",
+        "Black_Death",
+        "Ctenophora",
+        "Doctor_Who",
+        "Economic_inequality",
+        "European_Union_law",
+        "Harvard_University",
+        "Imperialism",
+        "Islamism",
+        "Jacksonville,_Florida",
+        "Kenya",
+        "Martin_Luther",
+        "Nikola_Tesla",
+        "Normans",
+        "Oxygen",
+        "Packet_switching",
+        "Pharmacy",
+        "Prime_number",
+        "Rhine",
+        "Scottish_Parliament",
+        "Steam_engine",
+        "Teacher",
+        "University_of_Chicago",
+        "Warsaw"
+      ]
+    },
+    "split_sizes": {
+      "test": 1000,
+      "tune": 1000
+    },
+    "statistics": {
+      "articles": 48,
+      "eligible_questions": 10569,
+      "sentences": 10250,
+      "unmapped_questions": 1
+    },
+    "tei_image": "ghcr.io/huggingface/text-embeddings-inference@sha256:2538ea1c9640d3763b15af668039d24172d063b42337b0c27796fc2be180c78d"
+  },
+  "scope": "Best tested ratio for this corpus, split, model pair, server, and retrieval settings; not a global optimum.",
+  "selection": {
+    "identity": {
+      "coarse_ratios": [
+        0.0,
+        1e-05,
+        3e-05,
+        0.0001,
+        0.0003,
+        0.001,
+        0.003,
+        0.005,
+        0.01,
+        0.03,
+        0.1,
+        0.3,
+        1.0,
+        3.0,
+        10.0,
+        30.0,
+        100.0,
+        "sparse"
+      ],
+      "fine_points": 9,
+      "manifest_sha256": "f5f82a1458f9ec9bf425556aa5de63a428bf8490bc9f36edfee449d4e140647b",
+      "top_k": 10
+    },
+    "selected_ratio": "0.168702397557",
+    "tuning": {
+      "0": {
+        "coverage": 1.0,
+        "hit_at_1": 0.568,
+        "hit_at_10": 0.851,
+        "hit_at_5": 0.794,
+        "mrr": 0.6669972222222222,
+        "questions": 1000
+      },
+      "0.0001": {
+        "coverage": 1.0,
+        "hit_at_1": 0.569,
+        "hit_at_10": 0.852,
+        "hit_at_5": 0.797,
+        "mrr": 0.667945634920635,
+        "questions": 1000
+      },
+      "0.0003": {
+        "coverage": 1.0,
+        "hit_at_1": 0.573,
+        "hit_at_10": 0.852,
+        "hit_at_5": 0.798,
+        "mrr": 0.6708571428571429,
+        "questions": 1000
+      },
+      "0.001": {
+        "coverage": 1.0,
+        "hit_at_1": 0.58,
+        "hit_at_10": 0.858,
+        "hit_at_5": 0.806,
+        "mrr": 0.6780738095238095,
+        "questions": 1000
+      },
+      "0.003": {
+        "coverage": 1.0,
+        "hit_at_1": 0.607,
+        "hit_at_10": 0.866,
+        "hit_at_5": 0.829,
+        "mrr": 0.7014503968253969,
+        "questions": 1000
+      },
+      "0.005": {
+        "coverage": 1.0,
+        "hit_at_1": 0.623,
+        "hit_at_10": 0.874,
+        "hit_at_5": 0.841,
+        "mrr": 0.7166071428571429,
+        "questions": 1000
+      },
+      "0.01": {
+        "coverage": 1.0,
+        "hit_at_1": 0.662,
+        "hit_at_10": 0.889,
+        "hit_at_5": 0.856,
+        "mrr": 0.7471980158730158,
+        "questions": 1000
+      },
+      "0.03": {
+        "coverage": 1.0,
+        "hit_at_1": 0.716,
+        "hit_at_10": 0.913,
+        "hit_at_5": 0.881,
+        "mrr": 0.7898087301587302,
+        "questions": 1000
+      },
+      "0.0400056429649": {
+        "coverage": 1.0,
+        "hit_at_1": 0.726,
+        "hit_at_10": 0.915,
+        "hit_at_5": 0.886,
+        "mrr": 0.7959547619047619,
+        "questions": 1000
+      },
+      "0.0533483823012": {
+        "coverage": 1.0,
+        "hit_at_1": 0.728,
+        "hit_at_10": 0.915,
+        "hit_at_5": 0.892,
+        "mrr": 0.7981944444444444,
+        "questions": 1000
+      },
+      "0.0711412111698": {
+        "coverage": 1.0,
+        "hit_at_1": 0.728,
+        "hit_at_10": 0.914,
+        "hit_at_5": 0.89,
+        "mrr": 0.7995269841269841,
+        "questions": 1000
+      },
+      "0.0948683298051": {
+        "coverage": 1.0,
+        "hit_at_1": 0.731,
+        "hit_at_10": 0.919,
+        "hit_at_5": 0.893,
+        "mrr": 0.8014142857142857,
+        "questions": 1000
+      },
+      "0.1": {
+        "coverage": 1.0,
+        "hit_at_1": 0.731,
+        "hit_at_10": 0.919,
+        "hit_at_5": 0.893,
+        "mrr": 0.8017130952380952,
+        "questions": 1000
+      },
+      "0.126508951029": {
+        "coverage": 1.0,
+        "hit_at_1": 0.728,
+        "hit_at_10": 0.919,
+        "hit_at_5": 0.895,
+        "mrr": 0.8007138888888888,
+        "questions": 1000
+      },
+      "0.168702397557": {
+        "coverage": 1.0,
+        "hit_at_1": 0.73,
+        "hit_at_10": 0.92,
+        "hit_at_5": 0.894,
+        "mrr": 0.8021,
+        "questions": 1000
+      },
+      "0.2249682628": {
+        "coverage": 1.0,
+        "hit_at_1": 0.731,
+        "hit_at_10": 0.919,
+        "hit_at_5": 0.893,
+        "mrr": 0.801804365079365,
+        "questions": 1000
+      },
+      "0.3": {
+        "coverage": 1.0,
+        "hit_at_1": 0.729,
+        "hit_at_10": 0.92,
+        "hit_at_5": 0.896,
+        "mrr": 0.8010519841269842,
+        "questions": 1000
+      },
+      "1": {
+        "coverage": 1.0,
+        "hit_at_1": 0.73,
+        "hit_at_10": 0.917,
+        "hit_at_5": 0.894,
+        "mrr": 0.8011142857142858,
+        "questions": 1000
+      },
+      "10": {
+        "coverage": 1.0,
+        "hit_at_1": 0.726,
+        "hit_at_10": 0.916,
+        "hit_at_5": 0.894,
+        "mrr": 0.7986119047619047,
+        "questions": 1000
+      },
+      "100": {
+        "coverage": 1.0,
+        "hit_at_1": 0.725,
+        "hit_at_10": 0.916,
+        "hit_at_5": 0.894,
+        "mrr": 0.797684126984127,
+        "questions": 1000
+      },
+      "1e-05": {
+        "coverage": 1.0,
+        "hit_at_1": 0.568,
+        "hit_at_10": 0.851,
+        "hit_at_5": 0.794,
+        "mrr": 0.6670472222222222,
+        "questions": 1000
+      },
+      "3": {
+        "coverage": 1.0,
+        "hit_at_1": 0.727,
+        "hit_at_10": 0.916,
+        "hit_at_5": 0.894,
+        "mrr": 0.7991035714285714,
+        "questions": 1000
+      },
+      "30": {
+        "coverage": 1.0,
+        "hit_at_1": 0.726,
+        "hit_at_10": 0.916,
+        "hit_at_5": 0.894,
+        "mrr": 0.7985174603174603,
+        "questions": 1000
+      },
+      "3e-05": {
+        "coverage": 1.0,
+        "hit_at_1": 0.568,
+        "hit_at_10": 0.851,
+        "hit_at_5": 0.794,
+        "mrr": 0.6670928571428572,
+        "questions": 1000
+      },
+      "sparse": {
+        "coverage": 1.0,
+        "hit_at_1": 0.725,
+        "hit_at_10": 0.916,
+        "hit_at_5": 0.894,
+        "mrr": 0.797684126984127,
+        "questions": 1000
+      }
+    },
+    "weights": {
+      "01a11211-ca9d-72ec-bdb4-ede84e2ab3c0": 1.0,
+      "01a11211-cac6-751f-a468-21fa8812c8cb": 0.168702397557
+    }
+  },
+  "test": {
+    "0": {
+      "coverage": 1.0,
+      "hit_at_1": 0.607,
+      "hit_at_10": 0.902,
+      "hit_at_5": 0.839,
+      "mrr": 0.7069281746031746,
+      "questions": 1000
+    },
+    "0.005": {
+      "coverage": 1.0,
+      "hit_at_1": 0.668,
+      "hit_at_10": 0.919,
+      "hit_at_5": 0.872,
+      "mrr": 0.7553376984126984,
+      "questions": 1000
+    },
+    "0.168702397557": {
+      "coverage": 1.0,
+      "hit_at_1": 0.742,
+      "hit_at_10": 0.929,
+      "hit_at_5": 0.907,
+      "mrr": 0.8146837301587302,
+      "questions": 1000
+    },
+    "1": {
+      "coverage": 1.0,
+      "hit_at_1": 0.74,
+      "hit_at_10": 0.927,
+      "hit_at_5": 0.903,
+      "mrr": 0.8122158730158731,
+      "questions": 1000
+    },
+    "sparse": {
+      "coverage": 1.0,
+      "hit_at_1": 0.74,
+      "hit_at_10": 0.926,
+      "hit_at_5": 0.903,
+      "mrr": 0.8116880952380953,
+      "questions": 1000
+    }
+  }
+}

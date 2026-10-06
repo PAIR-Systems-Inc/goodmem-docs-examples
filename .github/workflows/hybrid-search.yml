@@ -1,0 +1,22 @@
+name: Hybrid search examples
+on:
+  push:
+    paths: ['hybrid-search/**', '.github/workflows/hybrid-search.yml']
+  pull_request:
+    paths: ['hybrid-search/**', '.github/workflows/hybrid-search.yml']
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hybrid-search
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python -m py_compile *.py

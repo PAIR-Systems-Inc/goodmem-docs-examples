@@ -14,8 +14,8 @@ services:
       timeout: 3s
       retries: 30
   server:
-    # The corrected public image will be pinned after v1.0.325 is released.
-    image: ${GOODMEM_SERVER_IMAGE:?Set GOODMEM_SERVER_IMAGE to a build containing goodmem PR 1844; v1.0.324 is affected}
+    image: ghcr.io/pair-systems-inc/goodmem/server:latest
+    pull_policy: always
     environment:
       DB_URL: jdbc:postgresql://db:5432/goodmem_db
       DB_USER: goodmem_user

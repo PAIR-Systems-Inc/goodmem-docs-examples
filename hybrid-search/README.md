@@ -1,7 +1,6 @@
 # Hybrid retrieval examples
 
-Runnable examples for [Hybrid search](https://docs.goodmem.ai/docs/how-to/hybrid-search/)
-and [Evaluate hybrid search](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/).
+Runnable examples for [Build and tune hybrid search](https://docs.goodmem.ai/docs/how-to/hybrid-search/).
 Use the latest GoodMem release and the `goodmem` Python SDK to combine MiniLM
 and SPLADE, compare their rankings, and tune weights on SQuAD. The benchmark
 reaches 0.8147 MRR@10 and 92.9% Hit@10 with a ratio of about 1:0.17.
@@ -35,7 +34,7 @@ python demo.py --ratio 0.168702397557
 
 The demo compares dense-only, sparse-only, and hybrid scoring on six short
 documents. It uses a dense-to-sparse ratio of about 1:0.17 from the
-[SQuAD benchmark](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/).
+[SQuAD benchmark](https://docs.goodmem.ai/docs/how-to/hybrid-search/#measured-results).
 The command retains the exact coefficient for reproduction. Try `--query` to
 ask another question or `--ratio` to adjust the sparse contribution.
 
@@ -95,7 +94,7 @@ Metrics are MRR truncated at the requested depth, answer hit rate at each depth,
 and coverage (the fraction returning any hits). A question counts as a hit when
 any accepted answer sentence is retrieved. The evaluator checks that ingestion
 and retrieval complete successfully before reporting metrics. The
-[evaluation guide](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/)
+[guide’s results section](https://docs.goodmem.ai/docs/how-to/hybrid-search/#measured-results)
 includes the results table and confidence intervals.
 
 ## Inspect misses

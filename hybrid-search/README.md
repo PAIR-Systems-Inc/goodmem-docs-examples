@@ -2,21 +2,17 @@
 
 Runnable examples for [Hybrid search](https://docs.goodmem.ai/docs/how-to/hybrid-search/)
 and [Evaluate hybrid search](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/).
-They use the maintained `goodmem` SDK. The former `goodmem-client` scripts and their
-statistical recommendations have been replaced.
+Use the latest GoodMem release and the `goodmem` Python SDK to combine MiniLM
+and SPLADE, compare their rankings, and tune weights on SQuAD. The benchmark
+reaches 0.8147 MRR@10 and 92.9% Hit@10 with a ratio of about 1:0.17.
 
 ## Run the small example
 
 Use Python 3.12, Docker Engine, and Docker Compose on x86-64 Linux. The Compose
 file runs CPU inference and binds the public ports to localhost. It contains
-pinned TEI 1.9.4 and PostgreSQL images.
+pinned TEI and PostgreSQL images.
 
-**Server release pending:** The benchmark uses the fusion fix in
-[GoodMem PR #1844](https://github.com/PAIR-Systems-Inc/goodmem/pull/1844), scheduled
-for v1.0.325. Set `GOODMEM_SERVER_IMAGE` to an image built with that fix before
-running Compose, or wait for the corrected release. The server image has no
-default while the release is pending; v1.0.324 silently omits some fusion scores
-and must not be used to reproduce these results.
+Compose pulls the latest GoodMem server image when you start the example.
 
 ```bash
 python3 -m venv .venv
@@ -37,10 +33,12 @@ source run/credentials.env
 python demo.py --ratio 0.168702397557
 ```
 
-`0.168702397557` (about 0.17) is the best tested sparse coefficient from the
-[recorded SQuAD experiment](results/2026-10-06/summary.json). It is specific to
-this setup, not a universal optimum. The evaluation workflow below searches
-for a ratio on your corpus.
+The demo compares dense-only, sparse-only, and hybrid scoring on six short
+documents. It uses a dense-to-sparse ratio of about 1:0.17 from the
+[SQuAD benchmark](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/).
+The command retains the exact coefficient for reproduction. Try `--query` to
+ask another question or `--ratio` to adjust the sparse contribution.
+
 `run/credentials.env` is mode 0600 and is ignored by Git. The setup script creates
 it only for a newly initialized server; an existing server requires
 `GOODMEM_BASE_URL` and `GOODMEM_API_KEY`. To reuse already registered models, pass
@@ -72,36 +70,33 @@ python optimize_embedder_weights.py --manifest run/benchmark/manifest.json \
   --output-dir run/benchmark/search
 ```
 
-The loader makes one memory per sentence with chunking disabled and considers all
-annotator answer spans. Questions without a complete answer span in any sentence
-are counted and excluded. It freezes 1,000 tuning and 1,000 test questions from
-disjoint sets of articles. Both groups' source sentences are searchable: this
-is a retrieval task, so test answers must exist in the corpus.
+The loader stores one memory per sentence and maps annotated answers to accepted
+answer sentences. It samples 1,000 tuning questions and 1,000 test questions
+from separate groups of articles. The searchable corpus contains the answer
+sentences for both groups.
 
 The optimizer fixes the MiniLM coefficient at 1 and searches SPLADE coefficients
-on a logarithmic grid. Dense-only and sparse-only baselines can win. A second,
-prespecified logarithmic grid refines around the best tuning result. The selected
-ratio is saved before the held-out split is evaluated. Test comparisons include
-the two single-model scoring baselines, 1:0.005, and 1:1. Both embedders still
-discover candidates when one coefficient is zero; these comparisons isolate
-scoring weights in one two-embedder space, not the cost or latency of deploying
-a single model. No ratio is chosen using test
-scores. Use `--ratios`, `--fine-points`, `--threads`, or `--top-k` to change a new
-experiment; see `--help` for each command.
+on a logarithmic grid alongside dense-only and sparse-only scoring. A second
+grid refines around the best tuning result. The selected ratio is saved before
+the test split is evaluated. Test comparisons include the two single-model
+scoring baselines, 1:0.005, and 1:1. Both embedders contribute candidates in every
+configuration, so the comparison measures how weights affect ranking in the same
+space. Use `--ratios`, `--fine-points`, `--threads`, or `--top-k` to configure a
+new experiment; see `--help` for each command.
 
 `selection.json` records every tested ratio and its tuning metrics. `summary.json`
-records held-out metrics and paired article-cluster bootstrap intervals. Files
-under `evaluations/` retain question IDs, ranks, returned hits, weights, corpus
-and question fingerprints, and retrieval depth. Completed evaluations resume
-only for matching configurations. Do not modify corpus contents or model weights
-in place; create a new run if those change. The scripts verify the registered
-server/model configuration and all corpus memory processing states.
+records test metrics and paired article-cluster bootstrap intervals. Files under
+`evaluations/` retain question IDs, ranks, returned hits, weights, corpus and
+question fingerprints, and retrieval depth. Completed evaluations resume for
+matching configurations. Create a new run when changing the corpus or model
+weights.
 
 Metrics are MRR truncated at the requested depth, answer hit rate at each depth,
-and coverage (the fraction returning any hits). With multiple accepted answer
-sentences, answer hit rate is not document recall. A failed request, warning
-status, incomplete stream, failed memory, partial batch, or invalid weight ID
-fails the command; it is not converted into a retrieval miss.
+and coverage (the fraction returning any hits). A question counts as a hit when
+any accepted answer sentence is retrieved. The evaluator checks that ingestion
+and retrieval complete successfully before reporting metrics. The
+[evaluation guide](https://docs.goodmem.ai/docs/how-to/evaluate-hybrid-search/)
+includes the results table and confidence intervals.
 
 ## Inspect misses
 
@@ -113,11 +108,10 @@ python analyze_missing_gt_similarity.py --manifest run/benchmark/manifest.json \
   --output run/benchmark/misses.json
 ```
 
-It compares the selected weights with each single model through GoodMem's API,
-and includes returned text, scores, and accepted memory IDs. It does not require
-database credentials or assume a Qwen model. Increasing search size can change
-candidate discovery and rankings; the result is a diagnostic, not an exact rank
-over the whole corpus.
+It compares the selected weights with dense-only and sparse-only scoring through
+GoodMem's API and includes returned text, scores, and accepted memory IDs. The
+larger search size helps locate accepted answers beyond the original top ten;
+it can also change the candidate pool and ranking.
 
 ## Development checks
 
